@@ -1,0 +1,22 @@
+[
+  {
+    "id": 0,
+    "chats": [
+      {
+        "id": 1,
+        "messages": [
+          {
+            "time": "00:01",
+            "sender": "self",
+            "content": "Hi!"
+          },
+          {
+            "time": "00:12",
+            "sender": "receiver",
+            "content": "Hi!"
+          }
+        ]
+      }
+    ]
+  }
+]
