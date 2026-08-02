@@ -126,3 +126,9 @@ footer input:focus {
 footer button {
   width: 10%;
 }
+
+.profile {
+  display: flex;
+  justify-content: space-between;
+  width: 95%;
+}

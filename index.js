@@ -199,12 +199,14 @@ io.on("connection", socket => {
       if(!receiver_data_with_sender){
         receiver.chats.push({
           "id": data.sender.id,
+          "name": data.sender.name,
           "messages": []
         })
       }
       if (!sender_data_with_receiver) {
         sender.chats.push({
           "id": data.receiver.id,
+          "name": data.receiver.name,
           "messages": []
         })
       }

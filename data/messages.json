@@ -4,6 +4,7 @@
     "chats": [
       {
         "id": 1,
+        "name": "mohamad",
         "messages": [
           {
             "time": "00:01",
@@ -13,7 +14,12 @@
           {
             "time": "00:12",
             "sender": "receiver",
-            "content": "Hi!"
+            "content": "Hi!1"
+          },
+          {
+            "time": "00:12",
+            "sender": "receiver",
+            "content": "Hi!dffd"
           }
         ]
       }

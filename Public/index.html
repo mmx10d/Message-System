@@ -27,67 +27,19 @@
     <main>
       <div class="self">
         <!-- here message content from self -->
-        <span>Hi</span>
+        <span>Want to send someone?</span>
         <!-- time -->
         <span>00:00</span>
       </div>
       <div class="sender">
         <!-- here message content from self -->
-        <span>how are you?</span>
+        <span>yeah</span>
         <!-- time -->
         <span>00:01</span>
       </div>
       <div class="self">
         <!-- here message content from self -->
-        <span>Hi</span>
-        <!-- time -->
-        <span>00:00</span>
-      </div>
-      <div class="sender">
-        <!-- here message content from self -->
-        <span>how are you?</span>
-        <!-- time -->
-        <span>00:01</span>
-      </div>
-      <div class="self">
-        <!-- here message content from self -->
-        <span>Hi</span>
-        <!-- time -->
-        <span>00:00</span>
-      </div>
-      <div class="sender">
-        <!-- here message content from self -->
-        <span>how are you?</span>
-        <!-- time -->
-        <span>00:01</span>
-      </div>
-      <div class="self">
-        <!-- here message content from self -->
-        <span>Hi</span>
-        <!-- time -->
-        <span>00:00</span>
-      </div>
-      <div class="sender">
-        <!-- here message content from self -->
-        <span>how are you?</span>
-        <!-- time -->
-        <span>00:01</span>
-      </div>
-      <div class="sender">
-        <!-- here message content from self -->
-        <span>how are you?</span>
-        <!-- time -->
-        <span>00:01</span>
-      </div>
-      <div class="sender">
-        <!-- here message content from self -->
-        <span>how are you?</span>
-        <!-- time -->
-        <span>00:01</span>
-      </div>
-      <div class="self">
-        <!-- here message content from self -->
-        <span>Hi</span>
+        <span>choose who 😎!</span>
         <!-- time -->
         <span>00:00</span>
       </div>
@@ -103,50 +55,13 @@
   </main>
   <!-- all chats here -->
   <aside>
-    <div class="chats active">
-      <!-- profile photo -->
+    <!-- account status and logout button -->
+    <div class="profile">
+      <button onclick="localStorage.removeItem('user');location.reload()">logout</button>
+      <span id="user_name"></span>
       <div>
-        <img
-          src="https://img.magnific.com/free-photo/image-icon-front-side_187299-39480.jpg?semt=ais_hybrid&w=740&q=80">
+        <img src="#" alt="profile">
       </div>
-      <div>
-        <!-- name -->
-        <span>awwad</span>
-        <!-- last message content -->
-        <span>hi</span>
-      </div>
-      <!-- time last message -->
-      <span>00:00</span>
-    </div>
-    <div class="chats">
-      <!-- profile photo -->
-      <div>
-        <img
-          src="https://img.magnific.com/free-photo/image-icon-front-side_187299-39480.jpg?semt=ais_hybrid&w=740&q=80">
-      </div>
-      <div>
-        <!-- name -->
-        <span>awwad</span>
-        <!-- last message content -->
-        <span>hi</span>
-      </div>
-      <!-- time last message -->
-      <span>00:00</span>
-    </div>
-    <div class="chats">
-      <!-- profile photo -->
-      <div>
-        <img
-          src="https://img.magnific.com/free-photo/image-icon-front-side_187299-39480.jpg?semt=ais_hybrid&w=740&q=80">
-      </div>
-      <div>
-        <!-- name -->
-        <span>awwad</span>
-        <!-- last message content -->
-        <span>hi</span>
-      </div>
-      <!-- time last message -->
-      <span>00:00</span>
     </div>
   </aside>
 
@@ -158,31 +73,11 @@
 
   <!-- <h1>test server before socket.io</h1> -->
   <!-- <h1 id="name"></h1> -->
-  <!-- add logout button -->
-  <!-- <button onclick="localStorage.removeItem('user');location.reload()">logout</button> -->
   <!-- add remove account with data or without then signup in setting can restore the data then link from random id-->
   <dialog>
     <button onclick="modal.close()">ok</button>
   </dialog>
-  <script>
-    const modal = document.querySelector("dialog");
-    const name = document.querySelector("h1");
-
-    //test server
-    // onload = () => {
-    //   //get data from localstorage
-    //   //false mean not login
-    //   const user = JSON.parse(localStorage.getItem("user")) || false;
-    //   if (user) {
-    //     name.innerText = `Welcome ${user.name}`;
-    //   }
-    //   else {
-    //     location.pathname = "/api/login";
-    //   }
-    // }
-
-    //socket.io must be here or no i'll check
-  </script>
+  <script src="script/index.js"></script>
 </body>
 
 </html>
