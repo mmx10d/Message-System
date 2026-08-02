@@ -1,0 +1,128 @@
+body {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+}
+
+main {
+  width: 75%;
+  box-shadow: var(--shadow_inside--);
+  display: flex;
+  flex-direction: column;
+}
+
+main header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 10%;
+  width: 100%;
+  box-shadow: var(--shadow_outside--);
+}
+
+main header div {
+  width: 100px;
+  border-radius: 100px;
+}
+
+main main {
+  height: 80%;
+  width: 100%;
+  box-shadow: var(--shadow_inside--);
+  scrollbar-width: none;
+}
+
+main main div {
+  margin: 5px 15px;
+  width: max-content;
+  height: max-content;
+  padding: 20px;
+  box-shadow: var(--shadow_inside--);
+  border-radius: var(--radius--);
+}
+
+main main div span {
+  background: transparent;
+}
+
+.self {
+  margin-left: auto;
+  background: var(--shadow_outside--);
+}
+
+.sender {
+  margin-right: auto;
+}
+
+
+main footer {
+  height: 10%;
+  width: 100%;
+  border-radius: 10px 0 0 0;
+  background: transparent
+}
+
+aside {
+  width: 25%;
+  box-shadow: var(--shadow_outside--);
+}
+
+/* message box */
+.chats {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  margin: 20px 10px;
+  width: 90%;
+  height: 7%;
+  box-shadow: var(--shadow_outside--);
+  border-radius: var(--radius--);
+}
+
+.chats div:has(img) {
+  width: 50px;
+  height: 50px;
+  border-radius: 100px;
+}
+
+/* for active chats */
+.active,
+.chats:hover {
+  box-shadow: var(--shadow_inside--);
+}
+
+.active span,
+.active div,
+.chats div:hover,
+.chats span:hover {
+  background: transparent;
+}
+
+
+img {
+  width: 100%;
+  border-radius: inherit;
+}
+
+footer {
+  display: flex;
+  justify-content: center;
+  box-shadow: var(--shadow_outside--);
+}
+
+footer input {
+  width: 85%;
+  box-shadow: var(--shadow_outside--);
+  font-size: large;
+  padding-left: 10px;
+  border-radius: inherit;
+}
+
+footer input:focus {
+  outline: none;
+  box-shadow: var(--shadow_inside--);
+}
+
+footer button {
+  width: 10%;
+}
