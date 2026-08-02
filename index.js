@@ -1,5 +1,4 @@
 const express = require("express");
-const io = require("socket.io");
 const fs = require("fs");
 
 const app = express();
@@ -7,6 +6,12 @@ app.use(express.json());
 app.use(express.static("Public"));
 //convert express to http for socket.io;
 const http = require("http").createServer(app);
+const io = require("socket.io")(http, {
+  cors: {
+    origin: "*",
+    methods: ["POST", "GET"]
+  }
+})
 
 
 //take to login if not login
@@ -144,7 +149,95 @@ app.post("/api/chats", (req, res) => {
   catch (error) {
     return res.status(500).send({ message: "faild to read dataBase", error: error });
   }
+});
+
+
+io.on("connection", socket => {
+  //edit two chats the sender need check security and want from? to who?
+  // {message: "", receiver: id, sender: {id: 0, password: , email,}} for securty
+  socket.on("message", data => {
+    //get all message to get the wanted message
+    try {
+      // i think i'll change it to function
+      const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
+      const messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`, "utf-8"));
+
+      //get the user sender
+      const sender = users.find(user => user.id === data.sender.id);
+      if (!sender) return socket.emit("message", "user sender not find") //say to that page is not good;
+
+
+      //checksecurty if from right user
+      //say data not current must the frontend remove the locastorge or logout that use for secury
+      if (sender.email !== data.sender.email || sender.password !== data.sender.password) return socket.emit("message", "email or password not currect, relogin");
+
+
+      //check if receiver is currect
+      const receiver = users.find(user => user.id === data.receiver.id);
+      if (!receiver) return socket.emit("message", "receiver user not found");
+
+      //update the data and send the update to al
+
+
+
+      //get sender and receiver messages
+      const sender_message = messages.find(message => message.id === data.sender.id);
+      const receiver_message = message.find(message => message.id === data.receiver.id);
+
+      //checkt if them right
+      if (!sender_message) return socket.emit("message", "sender message not find");
+      if (!receiver_message) return socket.emit("message", "receiver message not find");
+
+      //get data of receiver of sender and edit it in the sender
+      const sender_data_with_receiver = sender_message.chats.find(chat => chat.id === data.receiver.id);
+      //get data of the sender of receiver and edit in the receiver;
+      //i think is mybe has error if that first message
+      //mybe i'll fix it in front end and use add freinds or something
+      const receiver_data_with_sender = receiver_message.chats.find(chat => chat.id === data.sender.id);
+
+      //if not found add new message to reciver or sender to fix probmel
+      if(!receiver_data_with_sender){
+        receiver.chats.push({
+          "id": data.sender.id,
+          "messages": []
+        })
+      }
+      if (!sender_data_with_receiver) {
+        sender.chats.push({
+          "id": data.receiver.id,
+          "messages": []
+        })
+      }
+
+      // i'll change the time to make it good later
+      // must front end ordening it using the time
+      sender_data_with_receiver.messages.push(
+        {
+          "time": "00:01",
+          "sender": "self",
+          "content": data.message
+        }
+      );
+      receiver_data_with_sender.messages.push(
+        {
+          "time": "00:01",
+          "sender": "receiver",
+          "content": data.message
+        }
+      );
+
+
+      io.emit("update"); //i think i'll make the front end requiest the message every update listen;
+    }
+    catch (error) {
+      console.log("something happen with socket.io: " + error);
+    }
+  })
+
+  //request the message from socket with password to update it in the server and the socket send the chats for any of chats for users;
 })
+
+
 
 http.listen(3000, function () {
   console.log("Server run..✅");;
