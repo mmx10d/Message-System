@@ -4,20 +4,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>login | signup</title>
+  <link rel="stylesheet" href="../css/login.css">
+  <title>login</title>
 </head>
 
 <body>
   <form>
-    <legend>login</legend>
-    <label for="email">Email Adress:</label>
-    <input type="email" id="email">
-    <label for="password">Password:</label>
-    <input type="password" id="password">
-    <!-- add checkbox for stay login -->
-    <input onclick="send()" type="button" value="login">
-    <input onclick="location.pathname = '/api/signup'" type="button" value="signup">
+    <fieldset>
+      <legend>login</legend>
+      <label for="email">Email Adress:</label>
+      <input type="email" id="email">
+      <label for="password">Password:</label>
+      <input type="password" id="password">
+      <!-- add checkbox for stay login -->
+      <input onclick="send()" type="button" value="login">
+      <a href="/api/signup">no account? login</a>
+    </fieldset>
   </form>
+  <dialog><button onclick="modal.close()">ok</button></dialog>
   <!--varibles-->
   <script>
     //to change it later
@@ -26,6 +30,7 @@
     const name_input = document.querySelector("#name");
     const email_input = document.querySelector("#email");
     const password_input = document.querySelector("#password");
+    const modal = document.querySelector("dialog");
   </script>
   <!--functions-->
   <script>

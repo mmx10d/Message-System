@@ -11,9 +11,13 @@
   <h1>test server before socket.io</h1>
   <h1 id="name"></h1>
   <!-- add logout button -->
-   <button onclick="localStorage.removeItem('user');location.reload()">logout</button>
+  <button onclick="localStorage.removeItem('user');location.reload()">logout</button>
   <!-- add remove account with data or without then signup in setting can restore the data then link from random id-->
+  <dialog>
+    <button onclick="modal.close()">ok</button>
+  </dialog>
   <script>
+    const modal = document.querySelector("dialog");
     const name = document.querySelector("h1");
 
     //test server
