@@ -1,0 +1,7 @@
+problem with index.js is login to anyone and response with undifiend or mybe in js;
+
+add in login message to say password not correct and email address
+
+add in login waiting to login then login
+
+add photo and edit profile to the website

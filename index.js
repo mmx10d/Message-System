@@ -92,6 +92,19 @@ app.post("/api/signup", (req, res) => {
       "password": $password //use JWT? to hash? mybe
     }
   );
+  //create data message for user;
+  try {
+    const messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`, "utf-8"));
+    messages.push({
+      "id": $lastId + 1,
+      "chats": []
+    });
+    fs.writeFileSync(`${__dirname}/data/messages.json`, JSON.stringify(messages), "utf-8");
+  }
+  catch (error) {
+    console.log("faild to create message database for user" + $lastId + 1);
+    console.log("error " + error);
+  }
 
   //Update Users dataBase in front after update go to login
   try {
@@ -103,6 +116,35 @@ app.post("/api/signup", (req, res) => {
   }
 });
 
+//need data from process in frontend use send localstorage
+app.post("/api/chats", (req, res) => {
+  //take full body from frontend
+  const $user = req.body;
+
+  try {
+    //edit make new signup create chat data
+    const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
+    const messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`, "utf-8"));
+    const user = users.find(user => user.id === $user.id);
+    const usermessage = messages.find(data => data.id === $user.id); //if not find'll return undifeind
+    if (!usermessage) return res.status(400).send("id or user not find");
+    if (user.id === $user.id) { //check the information
+      //checkt the password and the email for correct data request;
+      if (user.email === $user.email && user.password === $user.password) {
+        return res.status(200).send(usermessage); //send full data the backend i'll use it
+      }
+      else {
+        return res.status(400).send("email or password request is not match") //user must delete localstorage for securty
+      }
+    }
+    else {
+      return res.status(400).send("id or user not find");
+    }
+  }
+  catch (error) {
+    return res.status(500).send({ message: "faild to read dataBase", error: error });
+  }
+})
 
 http.listen(3000, function () {
   console.log("Server run..✅");;
