@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Messages</title>
+</head>
+
+<body>
+  <h1>test server before socket.io</h1>
+  <h1 id="name"></h1>
+  <!-- add logout button -->
+   <button onclick="localStorage.removeItem('user');location.reload()">logout</button>
+  <!-- add remove account with data or without then signup in setting can restore the data then link from random id-->
+  <script>
+    const name = document.querySelector("h1");
+
+    //test server
+    onload = () => {
+      //get data from localstorage
+      //false mean not login
+      const user = JSON.parse(localStorage.getItem("user")) || false;
+      if (user) {
+        name.innerText = `Welcome ${user.name}`;
+      }
+      else {
+        location.pathname = "/api/login";
+      }
+    }
+
+    //socket.io must be here or no i'll check
+  </script>
+</body>
+
+</html>

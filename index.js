@@ -4,22 +4,27 @@ const fs = require("fs");
 
 const app = express();
 app.use(express.json());
+app.use(express.static("Public"));
 //convert express to http for socket.io;
 const http = require("http").createServer(app);
 
 
 //take to login if not login
 app.get("/", (req, res) => {
-
+  res.sendFile(__dirname + "/Public/index.html");
 });
 
 //login page with signup button
 //take the data like cookies
 app.get("/api/login", (req, res) => {
+  res.sendFile(__dirname + "/Public/pages/login.html");
+});
 
 
-})
-
+//after signup go to login page
+app.get("/api/signup", (req, res) => {
+  res.sendFile(__dirname + "/Public/pages/signup.html");
+});
 
 
 //login request
@@ -35,10 +40,12 @@ app.post("/api/login", (req, res) => {
     if ($user.email === $email) {
       if ($user.password === $password) {
         return res.status(200).send($user); //send all data the fronend handle it
+      } else {
+        return res.status(400).send("invalid password");
       }
-      return res.status(400).send("invalid password");
+    } else {
+      return res.status(400).send("email not exit");
     }
-    return res.status(400).send("email not exit");
   }
   catch (error) {
     return res.status(500).send({ message: "faild read database", error: error });
@@ -63,6 +70,8 @@ app.post("/api/signup", (req, res) => {
   let $file;
   try {
     $file = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
+    const $user = $file.find(user => user.email === $email);
+    if ($user) return res.status(400).send("email is already signup, try login"); // check if email is exit or no;
     $lastId = $file[$file.length - 1].id;
   }
   catch (error) {

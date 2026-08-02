@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>login | signup</title>
+</head>
+
+<body>
+  <form>
+    <legend>login</legend>
+    <label for="name">Name:</label>
+    <input type="text" id="name">
+    <label for="email">Email Adress:</label>
+    <input type="email" id="email">
+    <label for="password">create Password:</label>
+    <input type="password" id="password">
+    <input onclick="send()" type="button" value="signup">
+  </form>
+  <!--varibles-->
+  <script>
+    //to change it later
+    const website = "http://localhost:3000";
+    const legend = document.querySelector("legend");
+    const name_input = document.querySelector("#name");
+    const email_input = document.querySelector("#email");
+    const password_input = document.querySelector("#password");
+  </script>
+  <!--functions-->
+  <script>
+    function send() {
+      const $name = name_input.value;
+      const $email = email_input.value;
+      const $password = password_input.value;
+      fetch(`${website}/api/signup`, {
+        method: "POST",
+        headers: {
+          "content-type": "application/json"
+        },
+        body: JSON.stringify(
+          {
+            "name": $name,
+            "email": $email,
+            "password": $password
+          }
+        )
+      })
+        .then(res => res.json())
+        .then(res => {
+          //back to login
+          if (res.ok) {
+            location.pathname = "/api/login";
+          }
+          else {
+            alert("response not good")
+          }
+        })
+        .catch(error => {
+          console.log(error.message);
+        });
+    }
+  </script>
+</body>
+
+</html>
