@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="css/basic.css">
   <link rel="stylesheet" href="css/index.css">
+  <script src="/socket.io/socket.io.js"></script>
   <title>Messages</title>
 </head>
 
@@ -45,9 +46,9 @@
       </div>
     </main>
     <!-- input for send -->
-    <footer>
+    <footer style="display: none;">
       <input type="text" placeholder="message">
-      <button>
+      <button onclick="send_message()">
         <img
           src="https://img.magnific.com/free-photo/image-icon-front-side_187299-39480.jpg?semt=ais_hybrid&w=740&q=80">
       </button>

@@ -1,5 +1,15 @@
 [
   {
+    "id": 2,
+    "chats": [
+      {
+        "id": 0,
+        "name": "mmx10d",
+        "messages": []
+      }
+    ]
+  },
+  {
     "id": 0,
     "chats": [
       {
@@ -20,6 +30,16 @@
             "time": "00:12",
             "sender": "receiver",
             "content": "Hi!dffd"
+          },
+          {
+            "time": "00:01",
+            "sender": "self",
+            "content": "55"
+          },
+          {
+            "time": "00:01",
+            "sender": "self",
+            "content": "34"
           }
         ]
       }
@@ -27,6 +47,23 @@
   },
   {
     "id": 1,
-    "chats": []
+    "chats": [
+      {
+        "id": 0,
+        "name": "mmx10d",
+        "messages": [
+          {
+            "time": "00:01",
+            "sender": "receiver",
+            "content": "55"
+          },
+          {
+            "time": "00:01",
+            "sender": "receiver",
+            "content": "34"
+          }
+        ]
+      }
+    ]
   }
 ]

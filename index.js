@@ -160,7 +160,7 @@ io.on("connection", socket => {
     try {
       // i think i'll change it to function
       const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
-      const messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`, "utf-8"));
+      let messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`, "utf-8"));
 
       //get the user sender
       const sender = users.find(user => user.id === data.sender.id);
@@ -170,7 +170,6 @@ io.on("connection", socket => {
       //checksecurty if from right user
       //say data not current must the frontend remove the locastorge or logout that use for secury
       if (sender.email !== data.sender.email || sender.password !== data.sender.password) return socket.emit("message", "email or password not currect, relogin");
-
 
       //check if receiver is currect
       const receiver = users.find(user => user.id === data.receiver.id);
@@ -182,7 +181,7 @@ io.on("connection", socket => {
 
       //get sender and receiver messages
       const sender_message = messages.find(message => message.id === data.sender.id);
-      const receiver_message = message.find(message => message.id === data.receiver.id);
+      const receiver_message = messages.find(message => message.id === data.receiver.id);
 
       //checkt if them right
       if (!sender_message) return socket.emit("message", "sender message not find");
@@ -194,21 +193,30 @@ io.on("connection", socket => {
       //i think is mybe has error if that first message
       //mybe i'll fix it in front end and use add freinds or something
       const receiver_data_with_sender = receiver_message.chats.find(chat => chat.id === data.sender.id);
-
       //if not found add new message to reciver or sender to fix probmel
-      if(!receiver_data_with_sender){
-        receiver.chats.push({
+      if (!receiver_data_with_sender) {
+        receiver_message.chats.push({
           "id": data.sender.id,
           "name": data.sender.name,
           "messages": []
         })
+        const update_messages = messages.filter(message => message.id !== data.receiver.id);
+        update_messages.push(receiver_message)
+        //update and read message again for contintue
+        fs.writeFileSync(`${__dirname}/data/messages.json`, JSON.stringify(update_messages), "utf-8");
+        messages = update_messages;
       }
       if (!sender_data_with_receiver) {
-        sender.chats.push({
+        sender_message.chats.push({
           "id": data.receiver.id,
           "name": data.receiver.name,
           "messages": []
         })
+        const update_messages = messages.filter(message => message.id !== data.sender.id);
+        update_messages.push(sender_message)
+        //update and read message again for contintue
+        fs.writeFileSync(`${__dirname}/data/messages.json`, JSON.stringify(update_messages), "utf-8");
+        messages = update_messages;
       }
 
       // i'll change the time to make it good later
@@ -227,6 +235,27 @@ io.on("connection", socket => {
           "content": data.message
         }
       );
+
+
+      //update the data by remove the sender and reciver old and push it again
+      //sender data is the new chats
+      // filter remove the data of users full;
+      const _filtermessagese = messages.filter(message => message.id !== data.sender.id);
+      const filteredmessage = _filtermessagese.filter(message => message.id !== data.receiver.id);
+      filteredmessage.push({
+        "id": data.sender.id,
+        "chats": [
+          sender_data_with_receiver
+        ]
+      });
+
+      filteredmessage.push({
+        "id": data.receiver.id,
+        "chats": [
+          receiver_data_with_sender
+        ]
+      });
+      fs.writeFileSync(`${__dirname}/data/messages.json`, JSON.stringify(filteredmessage), "utf-8");
 
 
       io.emit("update"); //i think i'll make the front end requiest the message every update listen;
