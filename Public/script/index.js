@@ -115,15 +115,13 @@ function open_chat(id) {
 function send_message() {
   if (!chat_input) return;
   socket.emit("message", { message: chat_input.value, receiver: {id: lastId, name: lastName}, sender: { id: user.id, password: user.password, email: user.email, name: user.name } });
-  socket.on("message", data => {
-    console.log(data)
-  })
+  chat_input.value = "";
 }
 
 //update message
 // i think here i'll be problem if the server has loot of people but i dont care im only maxim 3 person
 socket.on("message", () => {
-  console.log("recive new message")
+  open_chat(lastId);
 })
 
 

@@ -12,3 +12,14 @@ add function in server to check securty one time to make it flexable use and cle
 
 
 i have problem with the array and senior practics i want to deep in reduce filter map find in object and array methood why? for in socket.io i do something hard if i learned it good i'll do it easy
+
+
+
+//
+fix new server side messages in console as Unexpected token 's', "success signup" is not valid JSON
+and in fronend after signup not back to login
+
+
+add button to message someown and open search by name or email
+
+add messages to say something invaild when write in login is something not right

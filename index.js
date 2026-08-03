@@ -258,7 +258,7 @@ io.on("connection", socket => {
       fs.writeFileSync(`${__dirname}/data/messages.json`, JSON.stringify(filteredmessage), "utf-8");
 
 
-      io.emit("update"); //i think i'll make the front end requiest the message every update listen;
+      io.emit("message"); //i think i'll make the front end requiest the message every update listen;
     }
     catch (error) {
       console.log("something happen with socket.io: " + error);
