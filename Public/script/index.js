@@ -11,6 +11,8 @@ const aside_main = document.querySelector("aside main");
 const footer_name = document.querySelector("footer #user_name")
 const footer_photo = document.querySelector(".profile img")
 const pop = document.querySelector("dialog");
+const find_pop = document.querySelector(".find_pop");
+const find_pop_main = document.querySelector(".find_pop main")
 
 const file = document.querySelector("#file");
 const upload = document.querySelector(".uploade");
@@ -142,9 +144,70 @@ function activeEffect(element) {
 
 //now use socket.io to send and recieve is real challange lets beggin
 function send_message() {
-  if (!chat_input) return;
+  if (!chat_input.value) return;
   socket.emit("message", { message: chat_input.value, receiver: { id: lastId, name: lastName }, sender: { id: user.id, password: user.password, email: user.email, name: user.name } });
   chat_input.value = "";
+}
+
+
+//cool down for send every 300 ms
+let cooldown;
+function find_user(keyword) {
+  find_pop_main.innerHTML = "search...";
+  if (!keyword) return;
+  if (cooldown) {
+    clearTimeout(cooldown);
+  }
+  cooldown = setTimeout(() => {
+    fetch(`${website}api/find?keyword=${keyword}`)
+      .then(res => res.json())
+      .then(res => {
+        if (!res.message) {
+          find_pop_main.innerHTML = `
+              <div class="chats" onclick='add_chat(${res.id});activeEffect(this)'>
+                <!-- profile photo -->
+                <div>
+                  <img
+                    src="${res.photo}" onerror='this.src = "./icons/default.png"'>
+                </div>
+                <div>
+                  <!-- name -->
+                  <span>${res.name}</span>
+                </div>
+              </div>
+    `;
+        }
+        else {
+          find_pop_main.innerHTML = res.message;
+        }
+      })
+  }, 500)
+}
+
+//add new users to chats
+function add_chat(id) {
+  fetch(`${website}api/add`, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      user: user,
+      add: id
+    })
+  })
+    .then(res => res.json())
+    .then(res => {
+      if (res.message === "success added") {
+        location.reload();
+      }
+      else {
+        modal(res.message);
+      }
+    })
+    .catch(err => {
+      modal(err);
+    })
 }
 
 //update message

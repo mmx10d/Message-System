@@ -180,28 +180,78 @@ app.post("/api/photo/upload", (req, res) => {
 
 //this for find user by id or name;
 app.get("/api/find", (req, res) => {
-  const $query = req.query.query;
+  const $keyword = req.query.keyword;
 
-  //check if send query not empty or bad
-  if (!$query) return res.status(400).send({ message: "search is empty or bad request" });
+  //check if send keyword not empty or bad
+  if (!$keyword) return res.status(404).send({ message: "search is empty or bad request" });
 
   try {
     const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, 'utf-8'));
     // convert to number for fix anyproblem
-    const findbyid = users.find(user => user.id === Number($query));
+    const findbyid = users.find(user => user.id === Number($keyword));
     // send only photo and name dont want send the email or the password by mistak
-    if(findbyid) return res.send({name: findbyid.name, photo: findbyid.photo});
+    if (findbyid) return res.send({ name: findbyid.name, photo: findbyid.photo, id: findbyid.id });
 
     //same for problems fix
-    const findbyname = users.find(user => user.name == String($query));
-    if (findbyname) return res.send({name: findbyname.name, photo: findbyname.photo});
-    return res.status(400).send({message: "the user not exist"});
+    const findbyname = users.find(user => user.name == String($keyword));
+    if (findbyname) return res.send({ name: findbyname.name, photo: findbyname.photo, id: findbyname.id });
+    return res.status(404).send({ message: "the user not exist" });
   }
   catch (error) {
-    return res.status(500).send({message: "faild to read users"});
+    return res.status(500).send({ message: "faild to read users" });
   }
 })
 
+
+//add empty chat to user with new chats with empty messages
+// to recognize the chats in messages
+app.post("/api/add", (req, res) => {
+  //get full request user data fro secutry
+  const $user = req.body.user;
+  // get id of the new added required
+  const $add = req.body.add;
+
+  if ($user.id == $add) return res.status(409).send({ message: "can't add yourself" });
+  try {
+    const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`));
+    const messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`));
+    //get user from data
+    const user = users.find(user => user.id == $user.id);
+    if (!user) return res.status(404).send({ message: "user data not exit" });
+
+    const message = messages.find(message => message.id == user.id);
+    if (!message) return res.status(404).send({ message: "something happen in database, user message not find, need remove that account" })
+
+    //add securty password and email
+    if (user.password != $user.password || user.email != $user.email) return res.status(401).send({ message: "user email or password not correct" })
+
+    //get added data from data
+    const added_user = users.find(user => user.id == $add);
+    if (!added_user) return res.status(404).send({ message: "can't add this user, not exist" });
+
+
+
+
+
+    const isadded = message.chats.filter(chat => chat.id == $add);
+    if (isadded) return res.status(409).send({ message: "this user already added" });
+
+    message.chats.push({
+      "id": added_user.id,
+      "name": added_user.name,
+      "photo": added_user.photo,
+      "messages": []
+    });
+
+    const newmessages = users.filter(u => u.id !== user.id);
+    newmessages.push(message);
+    fs.writeFileSync(`${__dirname}/data/messages.json`, JSON.stringify(newmessages), 'utf-8');
+    res.send({ message: "success added" })
+  }
+  catch (error) {
+    res.status(500).send({ message: "error read data base", error: error })
+  }
+})
 
 io.on("connection", socket => {
   //edit two chats the sender need check security and want from? to who?

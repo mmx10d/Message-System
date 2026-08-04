@@ -23,7 +23,9 @@
       <!-- sender name -->
       <span></span>
       <!-- more option -->
-      <button>...</button>
+      <button>
+        <img src="icons/block.png">
+      </button>
     </header>
     <main>
       <h1>Welcome </h1>
@@ -41,7 +43,7 @@
     <!-- text mean chats -->
     <header>
       <h1>Chats</h1>
-      <button>
+      <button onclick="find_pop.showModal()">
         <img src="icons/add.png">
       </button>
     </header>
@@ -53,7 +55,6 @@
       <img alt="user profile" onerror="this.src='icons/default.png'">
     </footer>
   </aside>
-
 
 
 
@@ -73,6 +74,22 @@
     <label for="file">Choose File</label>
     <input type="file" id="file">
   </dialog>
+
+
+  //search pop
+  <dialog class="find_pop">
+    <div>
+      <!-- //search button -->
+      <header>
+        <input type="text" placeholder="Id or Name" onkeyup="find_user(this.value)">
+      </header>
+      <!-- result -->
+      <main>search result</main>
+      <button onclick="find_pop.close()">done</button>
+    </div>
+  </dialog>
+
+
   <script src="script/index.js"></script>
 </body>
 

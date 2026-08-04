@@ -1,6 +1,7 @@
 img {
   box-sizing: border-box;
   padding: 5px;
+  -webkit-user-drag: none;
 }
 
 body {
@@ -26,9 +27,17 @@ main header {
   box-shadow: var(--shadow_outside--);
 }
 
+main header button {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 20px;
+  cursor: pointer;
+}
+
 main header img {
   height: inherit;
   border-radius: inherit;
+  cursor: pointer;
 }
 
 main header div {
@@ -80,6 +89,10 @@ main footer {
   background: transparent
 }
 
+main footer img {
+  cursor: pointer;
+}
+
 aside {
   position: relative;
   width: 25%;
@@ -97,6 +110,7 @@ aside header {
 
 aside header button {
   height: 100%;
+  cursor: pointer;
 }
 
 aside header img {
@@ -146,6 +160,7 @@ aside footer img {
   height: 7%;
   box-shadow: var(--shadow_outside--);
   border-radius: var(--radius--);
+  cursor: pointer;
 }
 
 .chats div:has(img) {
@@ -216,4 +231,38 @@ footer button {
   justify-content: space-between;
   width: 100%;
   align-items: center;
+}
+
+
+.find_pop {
+  width: 30vw;
+  height: max-content;
+  font-size: large;
+}
+
+
+.find_pop main {
+  height: max-content;
+  box-shadow: var(--shadow_inside--);
+  border-radius: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.find_pop main div img{
+  width: inherit;
+  height: inherit;
+}
+
+
+.find_pop input {
+  border-radius: var(--radius--);
+  font-size: large;
+  width: 20vw;
+  height: 7vh;
+  margin-bottom: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  box-shadow: var(--shadow_inside--);
 }

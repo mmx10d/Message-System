@@ -16,7 +16,7 @@ orden the shape of message
 add button if the have more messages in main main when click do scroll to last
 
 
-add function getuser and get messagebyid to clean code;
+add function getuser and get messagebyid to clean code make it easy like edit user function remove to use it;
 
 
 add block button
@@ -30,3 +30,7 @@ and account delete button
 
 
 when right click on message open delete button and copy button if delete open new confirm;
+
+
+
+add sharlink when open it send page automatic add the user to chats
