@@ -2,6 +2,7 @@ body {
   width: 100vw;
   height: 100vh;
   display: flex;
+  overflow: hidden;
 }
 
 main {
@@ -20,16 +21,22 @@ main header {
   box-shadow: var(--shadow_outside--);
 }
 
+main header img {
+  height: inherit;
+  border-radius: inherit;
+}
+
 main header div {
   width: 100px;
+  height: 100%;
   border-radius: 100px;
 }
 
 main main {
-  height: 80%;
+  height: 100%;
   width: 100%;
   box-shadow: var(--shadow_inside--);
-  scrollbar-width: none;
+  overflow-x: scroll;
 }
 
 main main div {
@@ -43,6 +50,12 @@ main main div {
 
 main main div span {
   background: transparent;
+}
+
+main main h1 {
+  margin: auto 0;
+  background: transparent;
+  text-align: center;
 }
 
 .self {
@@ -63,8 +76,58 @@ main footer {
 }
 
 aside {
+  position: relative;
   width: 25%;
   box-shadow: var(--shadow_outside--);
+}
+
+aside header {
+  height: 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 10px;
+}
+
+aside header button {
+  height: 100%;
+}
+
+aside header img {
+  height: inherit;
+}
+
+aside main {
+  width: 100%;
+  height: 85%;
+  box-shadow: var(--shadow_inside--);
+  text-align: center;
+}
+
+aside main h1 {
+  margin-top: 10px;
+  background: transparent;
+}
+
+aside footer {
+  position: absolute;
+  bottom: 0;
+  height: 10%;
+  width: 100%;
+  border-radius: var(--radius--);
+}
+
+aside footer button {
+  border-radius: var(--radius--);
+  width: 100px;
+  height: 100%;
+  box-shadow: var(--shadow_outside--);
+  cursor: pointer;
+}
+
+aside footer img {
+  height: 100%;
 }
 
 /* message box */
@@ -85,6 +148,10 @@ aside {
   border-radius: 100px;
 }
 
+.chats div img {
+  height: inherit;
+}
+
 /* for active chats */
 .active,
 .chats:hover {
@@ -98,23 +165,24 @@ aside {
   background: transparent;
 }
 
-
-img {
-  width: 100%;
-  border-radius: inherit;
-}
-
 footer {
   display: flex;
   justify-content: center;
   box-shadow: var(--shadow_outside--);
 }
 
+
+footer img {
+  height: 100%;
+  border-radius: inherit;
+}
+
 footer input {
-  width: 85%;
+  width: 100%;
+  height: 100%;
   box-shadow: var(--shadow_outside--);
   font-size: large;
-  padding-left: 10px;
+  padding-left: 15px;
   border-radius: inherit;
 }
 
@@ -130,5 +198,6 @@ footer button {
 .profile {
   display: flex;
   justify-content: space-between;
-  width: 95%;
+  width: 100%;
+  align-items: center;
 }

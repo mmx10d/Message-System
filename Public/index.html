@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/basic.css">
   <link rel="stylesheet" href="css/index.css">
   <script src="/socket.io/socket.io.js"></script>
+  <script src="../script/security.js"></script>
   <title>Messages</title>
 </head>
 
@@ -14,56 +15,43 @@
   <!-- all messages -->
   <main>
     <!-- reciver inforomation -->
-    <header>
+    <header style="display: none;">
       <!-- send photo -->
       <div>
-        <img
-          src="https://img.magnific.com/free-photo/image-icon-front-side_187299-39480.jpg?semt=ais_hybrid&w=740&q=80">
+        <img src="./icons/default.png">
       </div>
       <!-- sender name -->
-      <span>name</span>
+      <span></span>
       <!-- more option -->
       <button>...</button>
     </header>
     <main>
-      <div class="self">
-        <!-- here message content from self -->
-        <span>Want to send someone?</span>
-        <!-- time -->
-        <span>00:00</span>
-      </div>
-      <div class="sender">
-        <!-- here message content from self -->
-        <span>yeah</span>
-        <!-- time -->
-        <span>00:01</span>
-      </div>
-      <div class="self">
-        <!-- here message content from self -->
-        <span>choose who 😎!</span>
-        <!-- time -->
-        <span>00:00</span>
-      </div>
+      <h1>Welcome </h1>
     </main>
     <!-- input for send -->
     <footer style="display: none;">
       <input type="text" placeholder="message">
       <button onclick="send_message()">
-        <img
-          src="https://img.magnific.com/free-photo/image-icon-front-side_187299-39480.jpg?semt=ais_hybrid&w=740&q=80">
+        <img src="./icons/send.png">
       </button>
     </footer>
   </main>
   <!-- all chats here -->
   <aside>
-    <!-- account status and logout button -->
-    <div class="profile">
+    <!-- text mean chats -->
+    <header>
+      <h1>Chats</h1>
+      <button>
+        <img src="icons/add.png">
+      </button>
+    </header>
+    <!-- all users here -->
+    <main></main>
+    <footer class="profile">
       <button onclick="localStorage.removeItem('user');location.reload()">logout</button>
-      <span id="user_name"></span>
-      <div>
-        <img src="#" alt="profile">
-      </div>
-    </div>
+      <h3 id="user_name"></h3>
+      <img alt="user profile" onerror="this.src='icons/default.png'">
+    </footer>
   </aside>
 
 
@@ -76,7 +64,14 @@
   <!-- <h1 id="name"></h1> -->
   <!-- add remove account with data or without then signup in setting can restore the data then link from random id-->
   <dialog>
-    <button onclick="modal.close()">ok</button>
+    <span></span>
+    <button onclick="pop.close()">ok</button>
+  </dialog>
+
+  <!-- uploade photo dialog -->
+  <dialog class="uploade">
+    <label for="file">Choose File</label>
+    <input type="file" id="file">
   </dialog>
   <script src="script/index.js"></script>
 </body>

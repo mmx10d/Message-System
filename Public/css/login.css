@@ -75,32 +75,3 @@ a {
   text-decoration: none;
   box-shadow: var(--shadow_outside--);
 }
-
-dialog {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  translate: -50%;
-  border-radius: 10px;
-  border: 1px solid red;
-  width: 100px;
-  height: max-content;
-  box-sizing: var(--shadow_outside--);
-  padding: 20px;
-  text-align: center;
-  margin: 10px;
-}
-
-dialog button {
-  border-radius: inherit;
-  padding: 5px;
-  width: 100px;
-  margin-top: 25px;
-  text-transform: capitalize;
-  box-shadow: var(--shadow_outside--);
-  cursor: pointer;
-}
-
-dialog button:hover {
-  box-shadow: var(--shadow_inside--);
-}

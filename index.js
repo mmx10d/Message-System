@@ -40,17 +40,20 @@ app.post("/api/login", (req, res) => {
   if (!$password) return res.status(400).send("password is empty!");
 
   try {
-    const $file = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
-    const $user = $file.find(user => user.email === $email);
-    if ($user.email === $email) {
-      if ($user.password === $password) {
-        return res.status(200).send($user); //send all data the fronend handle it
-      } else {
-        return res.status(400).send("invalid password");
+    const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
+    const user = users.find(user => user.email === $email);
+    if (user) {
+      if (user.email === $email && user.password === $password) {
+        return res.send(user) //send the full user the front'll handle it
       }
-    } else {
-      return res.status(400).send("email not exit");
+      else {
+        return res.status(400).send("password or email not correct!")
+      }
     }
+    else {
+      return res.status(400).send("user not exist")
+    }
+
   }
   catch (error) {
     return res.status(500).send({ message: "faild read database", error: error });
@@ -77,7 +80,12 @@ app.post("/api/signup", (req, res) => {
     $file = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
     const $user = $file.find(user => user.email === $email);
     if ($user) return res.status(400).send("email is already signup, try login"); // check if email is exit or no;
-    $lastId = $file[$file.length - 1].id;
+    if($file.length > 0){
+      $lastId = $file[$file.length - 1].id
+    }
+    else {
+      $lastId = 0
+    }
   }
   catch (error) {
     return res.status(500).send({ message: "faild read database", error: error });
@@ -86,7 +94,7 @@ app.post("/api/signup", (req, res) => {
 
   //add to it default username using id
   //this no secure? mybe but i'll use JWT later.
-  if (!$password) name = `user${$lastId}`;
+  if (!$name) name = `user${$lastId}`;
 
   //push the new user
   $file.push(
@@ -94,7 +102,8 @@ app.post("/api/signup", (req, res) => {
       "id": $lastId + 1,
       "name": $name,
       "email": $email, //most add email input for problems
-      "password": $password //use JWT? to hash? mybe
+      "password": $password, //use JWT? to hash? mybe
+      "photo": "default.png" //for default link
     }
   );
   //create data message for user;
@@ -108,13 +117,12 @@ app.post("/api/signup", (req, res) => {
   }
   catch (error) {
     console.log("faild to create message database for user" + $lastId + 1);
-    console.log("error " + error);
   }
 
   //Update Users dataBase in front after update go to login
   try {
     fs.writeFileSync(`${__dirname}/data/users.json`, JSON.stringify($file), "utf-8");
-    return res.status(200).send("success signup");
+    res.status(200).send("success signup");
   }
   catch (error) {
     return res.status(500).send({ message: "faild write database", error: error });
@@ -149,6 +157,25 @@ app.post("/api/chats", (req, res) => {
   catch (error) {
     return res.status(500).send({ message: "faild to read dataBase", error: error });
   }
+});
+
+app.post("/api/photo/upload", (req ,res) => {
+  const $photo = req.body.photos
+
+
+  //copy past for time
+  // i think i'll change it to function
+  const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
+  let messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`, "utf-8"));
+
+  //get the user sender
+  const user = users.find(user => user.id === $user.id);
+  if (!user) return res.status(400).send("message", "user not find") //say to that page is not good;
+
+  //checksecurty if from right user
+  //say data not current must the frontend remove the locastorge or logout that use for secury
+  if (user.email !== $user.email || user.password !== $user.password) return res.status(400).send("message", "email or password not currect, relogin");
+  
 });
 
 
@@ -198,6 +225,7 @@ io.on("connection", socket => {
         receiver_message.chats.push({
           "id": data.sender.id,
           "name": data.sender.name,
+          "photo": data.sender.photo,
           "messages": []
         })
         const update_messages = messages.filter(message => message.id !== data.receiver.id);
@@ -210,6 +238,7 @@ io.on("connection", socket => {
         sender_message.chats.push({
           "id": data.receiver.id,
           "name": data.receiver.name,
+          "photo": data.receiver.phto,
           "messages": []
         })
         const update_messages = messages.filter(message => message.id !== data.sender.id);

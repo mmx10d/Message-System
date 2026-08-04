@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/basic.css">
   <link rel="stylesheet" href="../css/login.css">
+  <script src="../script/security.js"></script>
   <title>login</title>
 </head>
 
@@ -22,23 +23,30 @@
       <a href="/api/signup">no account? login</a>
     </fieldset>
   </form>
-  <dialog><button onclick="modal.close()">ok</button></dialog>
+  <dialog>
+    <span></span>
+    <button onclick="pop.close()">ok</button>
+  </dialog>
   <!--varibles-->
   <script>
     //to change it later
-    const website = "http://localhost:3000";
+    const website = location.href;
     const legend = document.querySelector("legend");
     const name_input = document.querySelector("#name");
     const email_input = document.querySelector("#email");
     const password_input = document.querySelector("#password");
-    const modal = document.querySelector("dialog");
+    const pop = document.querySelector("dialog");
   </script>
   <!--functions-->
   <script>
+    function modal(message = "add message") {
+      pop.querySelector("span").innerText = message;
+      pop.showModal();
+    }
     function send() {
       const $email = email_input.value;
       const $password = password_input.value;
-      fetch(`${website}/api/login`, {
+      fetch(website, {
         method: "POST",
         headers: {
           "content-type": "application/json"
@@ -50,11 +58,16 @@
           }
         )
       })
-        .then(res => res.json())
+        .then(res => res.text())
         .then(res => {
           //save user data and then back to home
-          localStorage.setItem("user", JSON.stringify(res));
-          location.pathname = "/";
+          if (res[2] === "i") { //i for id if that response has it mean is ok i dont know why res.ok not work i'll search later
+            localStorage.setItem("user", res);
+            location.pathname = "/";
+          }
+          else {
+            modal(res);
+          }
         })
         .catch(error => {
           console.log({ message: "no connection", error: error });

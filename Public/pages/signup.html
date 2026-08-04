@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="../css/basic.css">
   <link rel="stylesheet" href="../css/login.css">
+  <script src="../script/security.js"></script>
   <title>signup</title>
 </head>
 
@@ -24,25 +25,31 @@
     </fieldset>
   </form>
   <dialog>
-    <button onclick="modal.close()">ok</button>
+    <span></span>
+    <button onclick="pop.close()">ok</button>
   </dialog>
   <!--varibles-->
   <script>
     //to change it later
-    const website = "http://localhost:3000";
+    const website = location.href;
     const legend = document.querySelector("legend");
     const name_input = document.querySelector("#name");
     const email_input = document.querySelector("#email");
     const password_input = document.querySelector("#password");
-    const modal = document.querySelector("dialog");
+    const pop = document.querySelector("dialog");
   </script>
   <!--functions-->
   <script>
+    function modal(message = "add message") {
+      pop.querySelector("span").innerText = message;
+      pop.showModal();
+    }
     function send() {
       const $name = name_input.value;
       const $email = email_input.value;
       const $password = password_input.value;
-      fetch(`${website}/api/signup`, {
+      console.log(`${website}`)
+      fetch(website, {
         method: "POST",
         headers: {
           "content-type": "application/json"
@@ -55,14 +62,14 @@
           }
         )
       })
-        .then(res => res.json())
+        .then(res => res.text())
         .then(res => {
           //back to login
-          if (res.ok) {
+          if (res === "success signup") {
             location.pathname = "/api/login";
           }
           else {
-            alert("response not good")
+            modal(res);
           }
         })
         .catch(error => {
