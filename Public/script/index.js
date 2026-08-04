@@ -13,6 +13,9 @@ const footer_photo = document.querySelector(".profile img")
 const pop = document.querySelector("dialog");
 const find_pop = document.querySelector(".find_pop");
 const find_pop_main = document.querySelector(".find_pop main")
+const info_pop = document.querySelector(".info_pop");
+const info_pop_id = info_pop.querySelectorAll("main span")[0]
+const info_pop_name = info_pop.querySelectorAll("main span")[1]
 
 const file = document.querySelector("#file");
 const upload = document.querySelector(".uploade");
@@ -34,6 +37,10 @@ onload = () => {
   footer_photo.src = user.photo;
   main_name.innerText += ` ${user.name} !`;
   chats_update();
+
+  //fill data of profile
+  info_pop_id.innerHTML = `<b>Id:</b> ${user.id}`
+  info_pop_name.innerHTML = `<b>Name:</b> ${user.name}`
 }
 
 function modal(message = "add message") {
@@ -209,6 +216,11 @@ function add_chat(id) {
       modal(err);
     })
 }
+
+function show_my_info(){
+  info_pop.showModal();
+}
+
 
 //update message
 // i think here i'll be problem if the server has loot of people but i dont care im only maxim 3 person

@@ -148,6 +148,7 @@ aside footer button {
 
 aside footer img {
   height: 100%;
+  cursor: pointer;
 }
 
 /* message box */
@@ -250,7 +251,7 @@ footer button {
   align-items: center;
 }
 
-.find_pop main div img{
+.find_pop main div img {
   width: inherit;
   height: inherit;
 }
@@ -265,4 +266,67 @@ footer button {
   padding: 10px;
   box-sizing: border-box;
   box-shadow: var(--shadow_inside--);
+}
+
+.info_pop {
+  width: 60vw;
+  height: 70vh;
+  border: none;
+}
+
+.info_pop div {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-radius: var(--radius--);
+}
+
+.info_pop main {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: none;
+}
+
+.info_pop main img {
+  height: auto;
+  width: inherit;
+  max-width: 200px;
+  background: transparent;
+}
+
+
+.info_pop aside {
+  height: 100%;
+  width: 20%;
+  display: flex;
+  flex-direction: column;
+  box-shadow: var(--shadow_inside--);
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.info_pop aside span {
+  height: 10%;
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  font-size: large;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: var(--shadow_outside--);
+  border-radius: var(--radius--);
+  margin: 10px 5px;
+}
+
+
+.info_pop button {
+  position: fixed;
+  bottom: 10px;
+  left: 10px;
 }

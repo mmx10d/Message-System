@@ -52,7 +52,7 @@
     <footer class="profile">
       <button onclick="localStorage.removeItem('user');location.reload()">logout</button>
       <h3 id="user_name"></h3>
-      <img alt="user profile" onerror="this.src='icons/default.png'">
+      <img alt="user profile" onerror="this.src='icons/default.png'" onclick="show_my_info()">
     </footer>
   </aside>
 
@@ -76,7 +76,7 @@
   </dialog>
 
 
-  //search pop
+  <!-- //search pop -->
   <dialog class="find_pop">
     <div>
       <!-- //search button -->
@@ -89,6 +89,28 @@
     </div>
   </dialog>
 
+  <dialog class="info_pop">
+    <!-- show info -->
+    <div><!-- edit info or account manag -->
+      <aside>
+        <span>public</span>
+        <span>account setting</span>
+      </aside>
+      <main>
+        <!-- show photo -->
+        <header>
+          <h1>My Information</h1>
+        </header>
+        <main>
+          <!-- show when click hide and can edit and show ok button or edit page -->
+          <img src="#" alt="profile photo" onerror="this.src='icons/default.png'">
+          <span>id: </span>
+          <span>name: </span>
+        </main>
+      </main>
+    </div>
+    <button onclick="info_pop.close()">close</button>
+  </dialog>
 
   <script src="script/index.js"></script>
 </body>
