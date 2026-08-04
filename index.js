@@ -180,7 +180,7 @@ app.post("/api/photo/upload", (req, res) => {
 
 //this for find user by id or name;
 app.get("/api/find", (req, res) => {
-  const $query = req.body.query;
+  const $query = req.query.query;
 
   //check if send query not empty or bad
   if (!$query) return res.status(400).send({ message: "search is empty or bad request" });
