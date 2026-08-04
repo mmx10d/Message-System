@@ -80,7 +80,7 @@ app.post("/api/signup", (req, res) => {
     $file = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
     const $user = $file.find(user => user.email === $email);
     if ($user) return res.status(400).send("email is already signup, try login"); // check if email is exit or no;
-    if($file.length > 0){
+    if ($file.length > 0) {
       $lastId = $file[$file.length - 1].id
     }
     else {
@@ -159,7 +159,7 @@ app.post("/api/chats", (req, res) => {
   }
 });
 
-app.post("/api/photo/upload", (req ,res) => {
+app.post("/api/photo/upload", (req, res) => {
   const $photo = req.body.photos
 
 
@@ -175,8 +175,32 @@ app.post("/api/photo/upload", (req ,res) => {
   //checksecurty if from right user
   //say data not current must the frontend remove the locastorge or logout that use for secury
   if (user.email !== $user.email || user.password !== $user.password) return res.status(400).send("message", "email or password not currect, relogin");
-  
+
 });
+
+//this for find user by id or name;
+app.get("/api/find", (req, res) => {
+  const $query = req.body.query;
+
+  //check if send query not empty or bad
+  if (!$query) return res.status(400).send({ message: "search is empty or bad request" });
+
+  try {
+    const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, 'utf-8'));
+    // convert to number for fix anyproblem
+    const findbyid = users.find(user => user.id === Number($query));
+    // send only photo and name dont want send the email or the password by mistak
+    if(findbyid) return res.send({name: findbyid.name, photo: findbyid.photo});
+
+    //same for problems fix
+    const findbyname = users.find(user => user.name == String($query));
+    if (findbyname) return res.send({name: findbyname.name, photo: findbyname.photo});
+    return res.status(400).send({message: "the user not exist"});
+  }
+  catch (error) {
+    return res.status(500).send({message: "faild to read users"});
+  }
+})
 
 
 io.on("connection", socket => {

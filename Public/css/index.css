@@ -1,3 +1,8 @@
+img {
+  box-sizing: border-box;
+  padding: 5px;
+}
+
 body {
   width: 100vw;
   height: 100vh;
@@ -124,6 +129,7 @@ aside footer button {
   height: 100%;
   box-shadow: var(--shadow_outside--);
   cursor: pointer;
+  font-size: large;
 }
 
 aside footer img {
@@ -144,12 +150,22 @@ aside footer img {
 
 .chats div:has(img) {
   width: 50px;
-  height: 50px;
+  height: 100%;
   border-radius: 100px;
+  background: transparent;
 }
 
 .chats div img {
   height: inherit;
+  background: transparent;
+}
+
+.chats div {
+  background: transparent;
+}
+
+.chats span {
+  background: transparent;
 }
 
 /* for active chats */

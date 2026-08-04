@@ -14,3 +14,19 @@ orden the shape of message
 
 
 add button if the have more messages in main main when click do scroll to last
+
+
+add function getuser and get messagebyid to clean code;
+
+
+add block button
+
+when click on chats open menu delete or block or change name for him self only
+
+
+when click on deine phto profile open setting can change every thing to change password need enter old password then can change
+if want change email need password authorazation
+and account delete button
+
+
+when right click on message open delete button and copy button if delete open new confirm;

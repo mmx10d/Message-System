@@ -17,6 +17,7 @@ const upload = document.querySelector(".uploade");
 
 //for the user self
 let user = JSON.parse(localStorage.getItem("user")) || false;
+let chats = document.querySelectorAll(".chats");
 
 //for now for who send
 let lastId;
@@ -67,7 +68,7 @@ function chats_update() {
           _lastTime = res.chats[i].messages[res.chats[i].messages.length - 1].time;
         }
         aside_main.innerHTML += `
-      <div class="chats" onclick='open_chat(${res.chats[i].id})'>
+      <div class="chats" onclick='open_chat(${res.chats[i].id});activeEffect(this)'>
       <!-- profile photo -->
       <div>
         <img
@@ -129,6 +130,14 @@ function open_chat(id) {
     })
 }
 
+
+function activeEffect(element) {
+  chats = document.querySelectorAll(".chats");
+  for (let i = 0; i < chats.length; i++) {
+    chats[i].classList.remove("active");
+  }
+  element.classList.add("active");
+}
 
 
 //now use socket.io to send and recieve is real challange lets beggin
