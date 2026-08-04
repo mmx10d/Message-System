@@ -34,3 +34,17 @@ when right click on message open delete button and copy button if delete open ne
 
 
 add sharlink when open it send page automatic add the user to chats
+
+
+
+show error in fetch in home page
+the solve is do logout automatic
+
+
+fix problem id number to start from 0 not 1
+
+
+some users show welcome with captilze
+
+
+search has senstive on letters
