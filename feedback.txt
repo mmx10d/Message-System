@@ -37,6 +37,5 @@ add sharlink when open it send page automatic add the user to chats
 
 
 
-show error in fetch in home page
-the solve is do logout automatic
 
+very later block contact make it in last after finish

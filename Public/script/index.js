@@ -17,6 +17,9 @@ const info_pop = document.querySelector(".info_pop");
 const info_pop_main = document.querySelector(".info_pop main");
 const info_pop_id = info_pop.querySelectorAll("main span")[0];
 const info_pop_name = info_pop.querySelectorAll("main span")[1];
+const info_pop_aside = info_pop.querySelector("aside");
+const info_pop_photo = info_pop.querySelector("img");
+const info_pop_h1 = info_pop.querySelector("h1");
 
 const file = document.querySelector("#file");
 const upload = document.querySelector(".uploade");
@@ -31,6 +34,8 @@ let autoscroll = true;
 //for now for who send
 let lastId;
 let lastName;
+let lastPhoto;
+let lastIdDelete;
 
 
 //io connection;
@@ -68,7 +73,7 @@ function chats_update() {
     //add new chats
     .then(res => {
       //make the user login if found user but not found it in database
-      if(!res.chats) {localStorage.removeItem("user"); location.reload};
+      if (!res.chats) { localStorage.removeItem("user"); location.reload };
       if (res.chats.length == 0) return aside_main.innerHTML = "<h1>No chats</h1>";
       aside_main.innerHTML = "";
       for (let i = 0; i < res.chats.length; i++) {
@@ -83,7 +88,7 @@ function chats_update() {
           _lastTime = res.chats[i].messages[res.chats[i].messages.length - 1].time;
         }
         aside_main.innerHTML += `
-      <div class="chats" onclick='open_chat(${res.chats[i].id});activeEffect(this)'>
+      <div class="chats" onclick='open_chat(${res.chats[i].id});activeEffect(this)' oncontextmenu="menu_handle(event, 'chat');lastIdDelete=${res.chats[i].id}">
       <!-- profile photo -->
       <div>
         <img
@@ -103,6 +108,8 @@ function chats_update() {
     })
     .catch(error => {
       modal("load chats error: " + error);
+      // for securty the logut automatic
+      setTimeout(()=>{location.reload()},1500);
     })
 }
 function open_chat(id) {
@@ -129,10 +136,11 @@ function open_chat(id) {
         main_chat.innerHTML = "";
         main_header_name.innerText = chat.name;
         lastName = chat.name;
+        lastPhoto = chat.photo;
         for (let i = 0; i < chat.messages.length; i++) {
           const message = chat.messages[i];
           main_chat.innerHTML += `
-      <div class="${message.sender}">
+      <div class="${message.sender}" oncontextmenu='menu_handle(event, "message")'>
         <!-- here message content from self -->
         <span>${message.content}</span>
         <!-- time -->
@@ -227,11 +235,7 @@ function add_chat(id) {
 }
 
 function show_my_info() {
-  info_pop.showModal();
-}
-
-
-function change_info_to_public() {
+  info_pop_aside.style.display = "";
   info_pop_main.innerHTML = `
         <!-- show photo -->
         <header>
@@ -243,10 +247,31 @@ function change_info_to_public() {
           <span><b>Id:</b> ${user.id}</span>
           <span><b>Name:</b> ${user.name}</span>
         </main>
-  `
+  `;
+  info_pop.showModal();
+}
+
+
+function change_info_to_public(id = user.id, name = user.name, photo = user.phto) {
+  info_pop_aside.style.display = "";
+  let info_pop_h1_text = "My information";
+  if (id != user.id) info_pop_h1_text = `${name.toUpperCase()} informations`;
+  info_pop_main.innerHTML = `
+        <!-- show photo -->
+        <header>
+          <h1>${info_pop_h1_text}</h1>
+        </header>
+        <main>
+          <!-- show when click hide and can edit and show ok button or edit page -->
+          <img src="${photo}" alt="profile photo" onerror="this.src='icons/default.png'">
+          <span><b>Id:</b> ${id}</span>
+          <span><b>Name:</b> ${name}</span>
+        </main>
+  `;
 }
 
 function change_info_to_account() {
+  info_pop_aside.style.display = "";
   info_pop_main.innerHTML = `
           <!-- show when click hide and can edit and show ok button or edit page -->
           <img src="#" alt="profile photo" onerror="this.src='icons/default.png'">
@@ -286,12 +311,117 @@ socket.on("message", () => {
   chat_scroll();
 })
 
-function chat_scroll(){
-  if(autoscroll){
-    main_chat.scrollTo(0,main_chat.scrollHeight);
+
+//width autoscroll varaible i can do some good shapes
+function chat_scroll() {
+  if (autoscroll) {
+    main_chat.scrollTo(0, main_chat.scrollHeight);
   }
 }
 
+
+function show_chat_info() {
+  change_info_to_public(lastId, lastName, lastPhoto);
+  info_pop_aside.style.display = "none";
+  info_pop.showModal();
+}
+
+
+//create the menu at the mouse if chat or message status hide or show
+let drop_menu = document.querySelector('.drop_menu');
+function menu(x, y, type = "chat", status = true) {
+  if (!drop_menu) {
+    document.body.innerHTML += `
+    <div class="drop_menu">
+      <button onclick="">
+        DELETE
+      </button>
+    </div>
+    `;
+    drop_menu = document.querySelector('.drop_menu');
+  }
+  else {
+    if (type == "chat") drop_menu.querySelector("button").onclick = _ => delete_chat();
+    else if (type == "message") drop_menu.querySelector("button").onclick = _ => delete_message();
+  }
+  drop_menu.style.cssText = `
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: var(--radius--);
+    padding: 10px;
+    position: absolute;
+    left: ${x}px;
+    top: ${y}px;
+    font-size: large;
+    box-shadow: var(--shadow_outside--);
+    cursor: pointer;
+  `;
+  let buttons = drop_menu.querySelectorAll("button")
+  for (let i = 0; i < buttons.length; i++) {
+    btn = buttons[i];
+    btn.style.cssText = `
+      cursor: pointer;
+    `;
+  }
+  if (status) {
+    drop_menu.style.display = ""
+  }
+  else {
+    drop_menu.style.display = "none"
+  }
+}
+
+
+document.addEventListener("click", () => {
+  if (drop_menu) {
+    menu(0, 0, "", false)
+  }
+})
+
+function menu_handle(e, type) {
+  e.preventDefault()
+  const x = e.clientX;
+  const y = e.clientY;
+  menu(x, y, type, true);
+}
+
+async function delete_chat() {
+  const res = await post_request_user_with_lastIdDelete("api/delete/chat");
+  console.log(res)
+}
+
+//generate new message id ohh shit more work but ok little bit to finish or make it in laste with block feature
+//no i'll remove it by length its safe if other user send new message that mean length be large but the number still it
+function delete_message(id) {
+
+}
+
+
+//to shortcut the function and request for now i'll use it then clean the code
+//use data reflex use like id like whatever
+//like /api/chats
+//use post_request_user_with_lastIdDelete('api/chats')
+function post_request_user_with_lastIdDelete(endpoint) {
+  fetch(website + endpoint, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      user: user,
+      "target": lastIdDelete
+    })
+  })
+    .then(res => res.json())
+    .then(res => {
+      return res;
+    })
+    .catch(error => {
+      return error;
+    })
+}
 
 //socket.io must be here or no i'll check // yeah first step i finished
 

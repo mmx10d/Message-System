@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+const { authentication, GET_USERS, GET_USER_MESSAGE, REMOVE_USER_MESSAGE, WRITE_MESSAGES, GET_MESSAGES } = require("./function");
 
 const app = express();
 app.use(express.json());
@@ -147,11 +148,11 @@ app.post("/api/chats", (req, res) => {
         return res.status(200).send(usermessage); //send full data the backend i'll use it
       }
       else {
-        return res.status(400).send({message: "email or password request is not match"}) //user must delete localstorage for securty
+        return res.status(400).send({ message: "email or password request is not match" }) //user must delete localstorage for securty
       }
     }
     else {
-      return res.status(400).send({message: "id or user not find"});
+      return res.status(400).send({ message: "id or user not find" });
     }
   }
   catch (error) {
@@ -263,6 +264,59 @@ app.post("/api/add", (req, res) => {
     res.status(500).send({ message: "error read data base", error: error })
   }
 })
+
+
+app.post("/api/block", authentication, (req, res) => {
+  const $user = req.body.user;
+  const $block = req.body.block;
+  const user_messages = GET_USER_MESSAGE($user.id);
+  const blocked_messages = GET_USER_MESSAGE($block);
+  //add chat block then no one can change it until remove it
+  user_messages.chats.push(
+    {
+      "block": true,
+      "content": "you blocked this chat"
+    })
+  blocked_messages.chats.push(
+    {
+      "block": true,
+      "content": "you blocked this chat"
+    })
+
+  //remove the two users then get it clean then push then edit
+  REMOVE_USER_MESSAGE($user.id);
+  const newmessages = GET_MESSAGES();
+  newmessages.push(user_messages);
+  newmessages.push(blocked_messages);
+  WRITE_MESSAGES(newmessages)
+
+});
+
+app.post("/api/delete/chat", authentication, (req, res) => {
+  const $user = req.body.user;
+  const $target = req.body.target;
+
+  //get the user and edit it and edit all messages
+
+  //get the  all message
+  const usermessage = GET_USER_MESSAGE($user.id);
+  // edit the data and make it ready;
+
+  usermessage.chats = usermessage.chats.filter(chat => chat.id != $target);
+
+  //get all mesages to delete the message and update it
+  const messages = GET_MESSAGES();
+
+  const newmessages = messages.filter(message => message.id != $user.id);
+
+
+  newmessages.push(usermessage);
+
+  WRITE_MESSAGES(newmessages);
+
+  res.send({ message: "success deleted" });
+})
+
 
 io.on("connection", socket => {
   //edit two chats the sender need check security and want from? to who?
@@ -383,8 +437,6 @@ io.on("connection", socket => {
   //request the message from socket with password to update it in the server and the socket send the chats for any of chats for users;
 })
 
-
-
 http.listen(3000, function () {
-  console.log("Server run..✅");;
+  console.log("Server run..✅");
 });

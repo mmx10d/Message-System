@@ -244,11 +244,11 @@ footer button {
 
 .find_pop main {
   height: max-content;
-  box-shadow: var(--shadow_inside--);
   border-radius: 2px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-shadow: none;
 }
 
 .find_pop main div img {
