@@ -19,8 +19,8 @@
       <label for="email">Email Adress:</label>
       <input type="email" id="email" required>
       <label for="password">create Password:</label>
-      <input type="password" id="password">
-      <input onclick="send()" type="button" value="signup">
+      <input type="password" id="password" minlength="">
+      <input type="submit" value="signup">
       <a href="/api/login">Already have account</a>
     </fieldset>
   </form>
@@ -39,6 +39,7 @@
     const email_input = document.querySelector("#email");
     const password_input = document.querySelector("#password");
     const pop = document.querySelector("dialog");
+    const send = document.querySelector("form")
   </script>
   <!--functions-->
   <script>
@@ -46,10 +47,12 @@
       pop.querySelector("span").innerText = message;
       pop.showModal();
     }
-    function send() {
+    send.onsubmit = (e) => {
+      e.preventDefault()
       const $name = name_input.value;
       const $email = email_input.value;
       const $password = password_input.value;
+      if($password.length < 4)return modal("password must be more than 4 length");
       console.log(`${website}`)
       fetch(website, {
         method: "POST",

@@ -361,3 +361,17 @@ footer button {
 .info_pop main div img {
   max-width: inherit;
 }
+
+
+.time,
+.lastMessageContent {
+  color: rgb(160, 160, 160);
+  font-size: x-small;
+  padding: 5px;
+  box-sizing: border-box;
+}
+
+.lastMessageContent {
+  color: rgb(130, 130, 130);
+  font-size: medium;
+}

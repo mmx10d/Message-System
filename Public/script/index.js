@@ -31,6 +31,9 @@ let chats = document.querySelectorAll(".chats");
 //auto scroll for if user not scrolling scroll
 let autoscroll = true;
 
+//for chatop
+let ischatopen = false;
+
 //for now for who send
 let lastId;
 let lastName;
@@ -98,10 +101,10 @@ function chats_update() {
         <!-- name -->
         <span>${res.chats[i].name}</span>
         <!-- last message content -->
-        <span>${_lastMessage}</span>
+        <span class="lastMessageContent">${_lastMessage}</span>
       </div>
       <!-- time last message -->
-      <span>${_lastTime}</span>
+      <span class="time">${_lastTime}</span>
     </div>
     `;
       }
@@ -109,11 +112,12 @@ function chats_update() {
     .catch(error => {
       modal("load chats error: " + error);
       // for securty the logut automatic
-      setTimeout(()=>{location.reload()},1500);
+      setTimeout(() => { location.reload() }, 1500);
     })
 }
 function open_chat(id) {
   lastId = id;
+  ischatopen = true;
   fetch(`${website}api/chats`, {
     method: "POST",
     headers: {
@@ -144,7 +148,7 @@ function open_chat(id) {
         <!-- here message content from self -->
         <span>${message.content}</span>
         <!-- time -->
-        <span>${message.time}</span>
+        <span class="time">${message.time}</span>
       </div>
       `;
         }
@@ -168,8 +172,27 @@ function activeEffect(element) {
 
 //now use socket.io to send and recieve is real challange lets beggin
 function send_message() {
+  let data = new Date();
+  let hourse = data.getHours();
+  let minutes = data.getMinutes();
+  let time = `${hourse}:${minutes}`;
   if (!chat_input.value) return;
-  socket.emit("message", { message: chat_input.value, receiver: { id: lastId, name: lastName }, sender: { id: user.id, password: user.password, email: user.email, name: user.name } });
+  if(lastId){open_chat(lastId)}
+  socket.emit("message",
+    {
+      message: chat_input.value,
+      time: time,
+      receiver: {
+        id: lastId,
+        name: lastName
+      },
+      sender: {
+        id: user.id,
+        password: user.password,
+        email: user.email,
+        name: user.name
+      }
+    });
   chat_input.value = "";
 }
 
@@ -307,8 +330,10 @@ function change_info_to_account() {
 // i think here i'll be problem if the server has loot of people but i dont care im only maxim 3 person
 socket.on("message", () => {
   chats_update();
-  open_chat(lastId);
   chat_scroll();
+  if(ischatopen){
+    open_chat(lastId)
+  }
 })
 
 
@@ -333,7 +358,7 @@ function menu(x, y, type = "chat", status = true) {
   if (!drop_menu) {
     document.body.innerHTML += `
     <div class="drop_menu">
-      <button onclick="">
+      <button>
         DELETE
       </button>
     </div>
@@ -341,8 +366,8 @@ function menu(x, y, type = "chat", status = true) {
     drop_menu = document.querySelector('.drop_menu');
   }
   else {
-    if (type == "chat") drop_menu.querySelector("button").onclick = _ => delete_chat();
-    else if (type == "message") drop_menu.querySelector("button").onclick = _ => delete_message();
+    if (type == "chat") drop_menu.querySelector("button").onmousedown = _ => delete_chat();
+    else if (type == "message") drop_menu.querySelector("button").onmousedown = _ => delete_message();
   }
   drop_menu.style.cssText = `
     display: flex;
@@ -363,6 +388,12 @@ function menu(x, y, type = "chat", status = true) {
     btn = buttons[i];
     btn.style.cssText = `
       cursor: pointer;
+      padding: 15px;
+      box-sizing: border-box;
+      border: solid 1px black;
+      border-radius: var(--radius--);
+      background: red;
+      color: white
     `;
   }
   if (status) {
@@ -378,6 +409,13 @@ document.addEventListener("click", () => {
   if (drop_menu) {
     menu(0, 0, "", false)
   }
+});
+
+
+document.addEventListener("keypress", e => {
+  if (e.code == "Enter") {
+    send_message();
+  }
 })
 
 function menu_handle(e, type) {
@@ -388,8 +426,9 @@ function menu_handle(e, type) {
 }
 
 async function delete_chat() {
-  const res = await post_request_user_with_lastIdDelete("api/delete/chat");
-  console.log(res)
+  // i dont think it need check the message only delete and reload
+  post_request_user_with_lastIdDelete("api/delete/chat");
+  location.reload();
 }
 
 //generate new message id ohh shit more work but ok little bit to finish or make it in laste with block feature

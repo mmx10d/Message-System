@@ -391,14 +391,14 @@ io.on("connection", socket => {
       // must front end ordening it using the time
       sender_data_with_receiver.messages.push(
         {
-          "time": "00:01",
+          "time": data.time,
           "sender": "self",
           "content": data.message
         }
       );
       receiver_data_with_sender.messages.push(
         {
-          "time": "00:01",
+          "time": data.time,
           "sender": "receiver",
           "content": data.message
         }

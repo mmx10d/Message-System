@@ -22,7 +22,7 @@ dialog {
   translate: -50%;
   border-radius: 10px;
   border: 1px solid red;
-  width: 100px;
+  width: max-content;
   height: max-content;
   box-sizing: var(--shadow_outside--);
   padding: 20px;
@@ -34,6 +34,8 @@ dialog div {
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 15px;
+  width: max-content;
 }
 
 dialog button {
