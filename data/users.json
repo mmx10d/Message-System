@@ -1,16 +1,1 @@
-[
-  {
-    "id": 0,
-    "name": "mmx10d",
-    "email": "test@gmail.com",
-    "password": "test",
-    "photo": "defualt.png"
-  },
-  {
-    "id": 1,
-    "name": "mohamad",
-    "email": "test1@gmail.com",
-    "password": "test1",
-    "photo": "defualt.png"
-  }
-]
+[{"id":1,"name":"ahmad","email":"test1","password":"test","photo":"default.png"},{"id":2,"name":"awwad","email":"test","password":"test","photo":"default.png"}]

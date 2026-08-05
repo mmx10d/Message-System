@@ -14,8 +14,9 @@ const pop = document.querySelector("dialog");
 const find_pop = document.querySelector(".find_pop");
 const find_pop_main = document.querySelector(".find_pop main")
 const info_pop = document.querySelector(".info_pop");
-const info_pop_id = info_pop.querySelectorAll("main span")[0]
-const info_pop_name = info_pop.querySelectorAll("main span")[1]
+const info_pop_main = document.querySelector(".info_pop main");
+const info_pop_id = info_pop.querySelectorAll("main span")[0];
+const info_pop_name = info_pop.querySelectorAll("main span")[1];
 
 const file = document.querySelector("#file");
 const upload = document.querySelector(".uploade");
@@ -23,6 +24,9 @@ const upload = document.querySelector(".uploade");
 //for the user self
 let user = JSON.parse(localStorage.getItem("user")) || false;
 let chats = document.querySelectorAll(".chats");
+
+//auto scroll for if user not scrolling scroll
+let autoscroll = true;
 
 //for now for who send
 let lastId;
@@ -35,7 +39,7 @@ const socket = io();
 onload = () => {
   footer_name.innerText = user.name;
   footer_photo.src = user.photo;
-  main_name.innerText += ` ${user.name} !`;
+  main_name.innerText = `Welcome ${user.name.toUpperCase()} !`;
   chats_update();
 
   //fill data of profile
@@ -63,12 +67,14 @@ function chats_update() {
     .then(res => res.json())
     //add new chats
     .then(res => {
-
-      if (res.chats.length === 0) return aside_main.innerHTML = "<h1>No chats</h1>";
+      //make the user login if found user but not found it in database
+      if(!res.chats) {localStorage.removeItem("user"); location.reload};
+      if (res.chats.length == 0) return aside_main.innerHTML = "<h1>No chats</h1>";
+      aside_main.innerHTML = "";
       for (let i = 0; i < res.chats.length; i++) {
         let _lastMessage;
         let _lastTime;
-        if (res.chats[i].messages.length === 0) {
+        if (res.chats[i].messages.length == 0) {
           _lastMessage = "";
           _lastTime = "";
         }
@@ -96,7 +102,7 @@ function chats_update() {
       }
     })
     .catch(error => {
-      modal("load chats error: " + error)
+      modal("load chats error: " + error);
     })
 }
 function open_chat(id) {
@@ -118,13 +124,14 @@ function open_chat(id) {
       footer.style.display = "";
       main_header.style.display = "";
       //search on target chat by id
-      const chat = res.chats.find(chat => chat.id === id);
-      main_chat.innerHTML = "";
-      main_header_name.innerText = chat.name;
-      lastName = chat.name;
-      for (let i = 0; i < chat.messages.length; i++) {
-        const message = chat.messages[i];
-        main_chat.innerHTML += `
+      const chat = res.chats.find(chat => chat.id == id);
+      if (chat) {
+        main_chat.innerHTML = "";
+        main_header_name.innerText = chat.name;
+        lastName = chat.name;
+        for (let i = 0; i < chat.messages.length; i++) {
+          const message = chat.messages[i];
+          main_chat.innerHTML += `
       <div class="${message.sender}">
         <!-- here message content from self -->
         <span>${message.content}</span>
@@ -132,7 +139,9 @@ function open_chat(id) {
         <span>${message.time}</span>
       </div>
       `;
+        }
       }
+      chat_scroll();
     })
     .catch(error => {
       modal("open chat error: " + error)
@@ -205,7 +214,7 @@ function add_chat(id) {
   })
     .then(res => res.json())
     .then(res => {
-      if (res.message === "success added") {
+      if (res.message == "success added") {
         location.reload();
       }
       else {
@@ -217,16 +226,71 @@ function add_chat(id) {
     })
 }
 
-function show_my_info(){
+function show_my_info() {
   info_pop.showModal();
+}
+
+
+function change_info_to_public() {
+  info_pop_main.innerHTML = `
+        <!-- show photo -->
+        <header>
+          <h1>My Information</h1>
+        </header>
+        <main>
+          <!-- show when click hide and can edit and show ok button or edit page -->
+          <img src="#" alt="profile photo" onerror="this.src='icons/default.png'">
+          <span><b>Id:</b> ${user.id}</span>
+          <span><b>Name:</b> ${user.name}</span>
+        </main>
+  `
+}
+
+function change_info_to_account() {
+  info_pop_main.innerHTML = `
+          <!-- show when click hide and can edit and show ok button or edit page -->
+          <img src="#" alt="profile photo" onerror="this.src='icons/default.png'">
+          <div>
+            <span>Id:</b> ${user.id}</span>
+            <button>
+              <img src="icons/edit.png">
+            </button>
+          </div>
+          <div>
+            <input type="text" value="${user.name}">
+            <button>
+              <img src="icons/check.png">
+            </button>
+          </div>
+          <div>
+            <input type="text" value="${user.email}">
+            <button>
+              <img src="icons/check.png">
+            </button>
+          </div>
+          <div>
+            <input type="text" value="${"*".repeat(user.password.length)}">
+            <button>
+              <img src="icons/check.png">
+            </button>
+          </div>
+        `;
 }
 
 
 //update message
 // i think here i'll be problem if the server has loot of people but i dont care im only maxim 3 person
 socket.on("message", () => {
+  chats_update();
   open_chat(lastId);
+  chat_scroll();
 })
+
+function chat_scroll(){
+  if(autoscroll){
+    main_chat.scrollTo(0,main_chat.scrollHeight);
+  }
+}
 
 
 //socket.io must be here or no i'll check // yeah first step i finished

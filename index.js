@@ -41,9 +41,9 @@ app.post("/api/login", (req, res) => {
 
   try {
     const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
-    const user = users.find(user => user.email === $email);
+    const user = users.find(user => user.email == $email);
     if (user) {
-      if (user.email === $email && user.password === $password) {
+      if (user.email == $email && user.password == $password) {
         return res.send(user) //send the full user the front'll handle it
       }
       else {
@@ -78,7 +78,7 @@ app.post("/api/signup", (req, res) => {
   let $file;
   try {
     $file = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
-    const $user = $file.find(user => user.email === $email);
+    const $user = $file.find(user => user.email == $email);
     if ($user) return res.status(400).send("email is already signup, try login"); // check if email is exit or no;
     if ($file.length > 0) {
       $lastId = $file[$file.length - 1].id
@@ -138,20 +138,20 @@ app.post("/api/chats", (req, res) => {
     //edit make new signup create chat data
     const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, "utf-8"));
     const messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`, "utf-8"));
-    const user = users.find(user => user.id === $user.id);
-    const usermessage = messages.find(data => data.id === $user.id); //if not find'll return undifeind
-    if (!usermessage) return res.status(400).send("id or user not find");
-    if (user.id === $user.id) { //check the information
+    const user = users.find(user => user.id == $user.id);
+    const usermessage = messages.find(data => data.id == $user.id); //if not find'll return undifeind
+    if (!usermessage) return res.status(400).send({ message: "id or user not find" });
+    if (user.id == $user.id) { //check the information
       //checkt the password and the email for correct data request;
-      if (user.email === $user.email && user.password === $user.password) {
+      if (user.email == $user.email && user.password == $user.password) {
         return res.status(200).send(usermessage); //send full data the backend i'll use it
       }
       else {
-        return res.status(400).send("email or password request is not match") //user must delete localstorage for securty
+        return res.status(400).send({message: "email or password request is not match"}) //user must delete localstorage for securty
       }
     }
     else {
-      return res.status(400).send("id or user not find");
+      return res.status(400).send({message: "id or user not find"});
     }
   }
   catch (error) {
@@ -169,12 +169,12 @@ app.post("/api/photo/upload", (req, res) => {
   let messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`, "utf-8"));
 
   //get the user sender
-  const user = users.find(user => user.id === $user.id);
+  const user = users.find(user => user.id == $user.id);
   if (!user) return res.status(400).send("message", "user not find") //say to that page is not good;
 
   //checksecurty if from right user
   //say data not current must the frontend remove the locastorge or logout that use for secury
-  if (user.email !== $user.email || user.password !== $user.password) return res.status(400).send("message", "email or password not currect, relogin");
+  if (user.email != $user.email || user.password != $user.password) return res.status(400).send("message", "email or password not currect, relogin");
 
 });
 
@@ -188,12 +188,12 @@ app.get("/api/find", (req, res) => {
   try {
     const users = JSON.parse(fs.readFileSync(`${__dirname}/data/users.json`, 'utf-8'));
     // convert to number for fix anyproblem
-    const findbyid = users.find(user => user.id === Number($keyword));
+    const findbyid = users.find(user => user.id == Number($keyword));
     // send only photo and name dont want send the email or the password by mistak
     if (findbyid) return res.send({ name: findbyid.name, photo: findbyid.photo, id: findbyid.id });
 
     //same for problems fix
-    const findbyname = users.find(user => user.name == String($keyword));
+    const findbyname = users.find(user => user.name.toLowerCase() == String($keyword).toLowerCase());
     if (findbyname) return res.send({ name: findbyname.name, photo: findbyname.photo, id: findbyname.id });
     return res.status(404).send({ message: "the user not exist" });
   }
@@ -219,8 +219,8 @@ app.post("/api/add", (req, res) => {
     const user = users.find(user => user.id == $user.id);
     if (!user) return res.status(404).send({ message: "user data not exit" });
 
-    const message = messages.find(message => message.id == user.id);
-    if (!message) return res.status(404).send({ message: "something happen in database, user message not find, need remove that account" })
+    const usermessage = messages.find(message => message.id == user.id);
+    if (!usermessage) return res.status(404).send({ message: "something happen in database, user message not find, need remove that account" })
 
     //add securty password and email
     if (user.password != $user.password || user.email != $user.email) return res.status(401).send({ message: "user email or password not correct" })
@@ -232,19 +232,30 @@ app.post("/api/add", (req, res) => {
 
 
 
+    const isadded = usermessage.chats.filter(chat => chat.id == $add);
+    if (isadded.length) return res.status(409).send({ message: "this user already added" });
 
-    const isadded = message.chats.filter(chat => chat.id == $add);
-    if (isadded) return res.status(409).send({ message: "this user already added" });
-
-    message.chats.push({
+    usermessage.chats.push({
       "id": added_user.id,
       "name": added_user.name,
       "photo": added_user.photo,
       "messages": []
     });
 
-    const newmessages = users.filter(u => u.id !== user.id);
-    newmessages.push(message);
+    const added_message = messages.find(message => message.id == $add);
+
+    added_message.chats.push({
+      "id": user.id,
+      "name": user.name,
+      "photo": user.photo,
+      "messages": []
+    });
+
+
+    const clearuser = messages.filter(u => u.id != user.id);
+    const newmessages = clearuser.filter(u => u.id != $add);
+    newmessages.push(usermessage);
+    newmessages.push(added_message);
     fs.writeFileSync(`${__dirname}/data/messages.json`, JSON.stringify(newmessages), 'utf-8');
     res.send({ message: "success added" })
   }
@@ -264,16 +275,16 @@ io.on("connection", socket => {
       let messages = JSON.parse(fs.readFileSync(`${__dirname}/data/messages.json`, "utf-8"));
 
       //get the user sender
-      const sender = users.find(user => user.id === data.sender.id);
+      const sender = users.find(user => user.id == data.sender.id);
       if (!sender) return socket.emit("message", "user sender not find") //say to that page is not good;
 
 
       //checksecurty if from right user
       //say data not current must the frontend remove the locastorge or logout that use for secury
-      if (sender.email !== data.sender.email || sender.password !== data.sender.password) return socket.emit("message", "email or password not currect, relogin");
+      if (sender.email != data.sender.email || sender.password != data.sender.password) return socket.emit("message", "email or password not currect, relogin");
 
       //check if receiver is currect
-      const receiver = users.find(user => user.id === data.receiver.id);
+      const receiver = users.find(user => user.id == data.receiver.id);
       if (!receiver) return socket.emit("message", "receiver user not found");
 
       //update the data and send the update to al
@@ -281,19 +292,19 @@ io.on("connection", socket => {
 
 
       //get sender and receiver messages
-      const sender_message = messages.find(message => message.id === data.sender.id);
-      const receiver_message = messages.find(message => message.id === data.receiver.id);
+      const sender_message = messages.find(message => message.id == data.sender.id);
+      const receiver_message = messages.find(message => message.id == data.receiver.id);
 
       //checkt if them right
       if (!sender_message) return socket.emit("message", "sender message not find");
       if (!receiver_message) return socket.emit("message", "receiver message not find");
 
       //get data of receiver of sender and edit it in the sender
-      const sender_data_with_receiver = sender_message.chats.find(chat => chat.id === data.receiver.id);
+      const sender_data_with_receiver = sender_message.chats.find(chat => chat.id == data.receiver.id);
       //get data of the sender of receiver and edit in the receiver;
       //i think is mybe has error if that first message
       //mybe i'll fix it in front end and use add freinds or something
-      const receiver_data_with_sender = receiver_message.chats.find(chat => chat.id === data.sender.id);
+      const receiver_data_with_sender = receiver_message.chats.find(chat => chat.id == data.sender.id);
       //if not found add new message to reciver or sender to fix probmel
       if (!receiver_data_with_sender) {
         receiver_message.chats.push({
@@ -302,7 +313,7 @@ io.on("connection", socket => {
           "photo": data.sender.photo,
           "messages": []
         })
-        const update_messages = messages.filter(message => message.id !== data.receiver.id);
+        const update_messages = messages.filter(message => message.id != data.receiver.id);
         update_messages.push(receiver_message)
         //update and read message again for contintue
         fs.writeFileSync(`${__dirname}/data/messages.json`, JSON.stringify(update_messages), "utf-8");
@@ -315,7 +326,7 @@ io.on("connection", socket => {
           "photo": data.receiver.phto,
           "messages": []
         })
-        const update_messages = messages.filter(message => message.id !== data.sender.id);
+        const update_messages = messages.filter(message => message.id != data.sender.id);
         update_messages.push(sender_message)
         //update and read message again for contintue
         fs.writeFileSync(`${__dirname}/data/messages.json`, JSON.stringify(update_messages), "utf-8");
@@ -343,8 +354,8 @@ io.on("connection", socket => {
       //update the data by remove the sender and reciver old and push it again
       //sender data is the new chats
       // filter remove the data of users full;
-      const _filtermessagese = messages.filter(message => message.id !== data.sender.id);
-      const filteredmessage = _filtermessagese.filter(message => message.id !== data.receiver.id);
+      const _filtermessagese = messages.filter(message => message.id != data.sender.id);
+      const filteredmessage = _filtermessagese.filter(message => message.id != data.receiver.id);
       filteredmessage.push({
         "id": data.sender.id,
         "chats": [
@@ -364,6 +375,7 @@ io.on("connection", socket => {
       io.emit("message"); //i think i'll make the front end requiest the message every update listen;
     }
     catch (error) {
+      console.log(error);
       console.log("something happen with socket.io: " + error);
     }
   })

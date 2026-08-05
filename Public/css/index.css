@@ -306,8 +306,9 @@ footer button {
   display: flex;
   flex-direction: column;
   box-shadow: var(--shadow_inside--);
-  padding: 5px;
+  padding: 10px;
   box-sizing: border-box;
+  border-radius: var(--radius--);
 }
 
 .info_pop aside span {
@@ -322,6 +323,7 @@ footer button {
   box-shadow: var(--shadow_outside--);
   border-radius: var(--radius--);
   margin: 10px 5px;
+  cursor: pointer;
 }
 
 
@@ -329,4 +331,33 @@ footer button {
   position: fixed;
   bottom: 10px;
   left: 10px;
+}
+
+
+.info_pop input {
+  box-shadow: var(--shadow_inside--);
+  border-radius: var(--radius--);
+  padding: 10px;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+
+.info_pop main div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+
+.info_pop main div button {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.info_pop main div img {
+  max-width: inherit;
 }
